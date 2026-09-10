@@ -15,8 +15,22 @@ import libraryRoutes from './routes/library';
 const app = express();
 const PORT = process.env.PORT || 3333;
 
+// Origens permitidas: dev local (Vite) + o app mobile empacotado (Capacitor)
+// ALLOWED_ORIGINS permite adicionar outras origens via variável de ambiente (ex: domínio de um painel web), separadas por vírgula.
+const defaultOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'capacitor://localhost',
+  'http://localhost',
+  'https://localhost',
+];
+const envOrigins = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: [...defaultOrigins, ...envOrigins],
   credentials: true,
 }));
 
